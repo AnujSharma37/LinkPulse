@@ -27,7 +27,7 @@ export async function createSession(res: Response, userId: string) {
   res.cookie(SESSION_COOKIE, token, {
     httpOnly: true,           // JavaScript cannot read it (XSS can't steal the session)
     secure: config.cookieSecure,
-    sameSite: 'lax',          // not sent on cross-site POSTs (CSRF defence, plus the Origin check)
+    sameSite: 'none',          // not sent on cross-site POSTs (CSRF defence, plus the Origin check)
     expires,
     path: '/',
   });
@@ -46,5 +46,5 @@ export async function userFromToken(token: string | undefined) {
 
 export async function destroySession(res: Response, token: string | undefined) {
   if (token) await query('DELETE FROM sessions WHERE token_hash = $1', [sha256(token)]);
-  res.clearCookie(SESSION_COOKIE, { path: '/', httpOnly: true, secure: config.cookieSecure, sameSite: 'lax' });
+  res.clearCookie(SESSION_COOKIE, { path: '/', httpOnly: true, secure: config.cookieSecure, sameSite: 'none' });
 }
