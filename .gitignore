@@ -1,0 +1,30 @@
+# dependencies & build output
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+
+# secrets: never commit real environment files (the .example template is fine)
+.env
+.env.*
+!.env.example
+server/.env
+server/.env.*
+supabase/.env
+supabase/.env.*
+supabase/.temp/
+*.pem
+*.key
+
+# test & tooling output
+playwright-report/
+test-results/
+coverage/
+.vite/
+
+# logs & OS/editor files
+*.log
+npm-debug.log*
+.DS_Store
+.idea/
+.vscode/

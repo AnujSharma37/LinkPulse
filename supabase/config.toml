@@ -1,0 +1,11 @@
+# Minimal Supabase CLI config for LinkPulse. `supabase init` may add more settings; keep these.
+project_id = "linkpulse"
+
+[functions.r]
+verify_jwt = false          # public redirect endpoint — visitors are not logged in
+
+[functions.create-link]
+verify_jwt = true
+
+[functions.update-link]
+verify_jwt = true

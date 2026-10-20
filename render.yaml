@@ -1,0 +1,38 @@
+# One-click-ish Render blueprint: a free web service + a free Postgres database.
+# Check Render's current free-tier limits before relying on it (free services sleep when idle).
+services:
+  - type: web
+    name: linkpulse
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase: { name: linkpulse-db, property: connectionString }
+      - key: TRUST_PROXY
+        value: "1"
+      - key: SHORT_BASE_URL
+        sync: false   # set to https://<your-service>.onrender.com
+      - key: APP_ORIGIN
+        sync: false   # same value as SHORT_BASE_URL
+      - key: GOOGLE_SAFE_BROWSING_API_KEY
+        sync: false
+      - key: EMAIL_PROVIDER      # "resend" or "smtp" turns on real verification + password-reset emails
+        value: console
+      - key: RESEND_API_KEY
+        sync: false
+      - key: SMTP_HOST           # only for EMAIL_PROVIDER=smtp
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: EMAIL_FROM          # e.g. LinkPulse <no-reply@your-verified-domain>
+        sync: false
+databases:
+  - name: linkpulse-db
+    plan: free
