@@ -43,11 +43,11 @@ export class ApiError extends Error {
     return out;
   }
 }
-
+const API_BASE_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '');
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
   let res: Response;
   try {
-    res = await fetch(`/api${path}`, {
+     res = await fetch(`${API_BASE_URL}/api${path}`, {
       method,
       credentials: 'same-origin',
       headers: body !== undefined ? { 'Content-Type': 'application/json' } : undefined,
