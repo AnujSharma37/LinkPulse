@@ -28,6 +28,29 @@ export function createApp() {
   const app = express();
   app.set('trust proxy', config.trustProxy === 'false' ? false : /^\d+$/.test(config.trustProxy) ? Number(config.trustProxy) : config.trustProxy);
   app.disable('x-powered-by');
+  app.use((req, res, next) => {
+  const origin = req.get('Origin');
+
+  if (origin === config.appOrigin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader(
+      'Access-Control-Allow-Methods',
+      'GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS',
+    );
+    res.setHeader(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization, X-CSRF-Token',
+    );
+  }
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(origin === config.appOrigin ? 204 : 403);
+  }
+
+  next();
+});
   app.use(helmet({
     contentSecurityPolicy: {
       directives: {
